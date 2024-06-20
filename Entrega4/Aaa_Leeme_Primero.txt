@@ -11,7 +11,7 @@ y registra en la tabla Alertas para determinar el envío de correos para generar
 
 En el directorio en el que se ha descargado el proyecto se encuentra :
 	
-	- DataWH : Contiene el Volumen de la Base de Datos Postgre que persiste aún cuando el contenedor sea eliminado.
+	- DataWH : Contiene la Base de Datos Postgre que persiste aún cuando el contenedor sea eliminado.
 
 	- Carpeta Antes_de_Iniciar : Contiene código para la creación de tablas necesarias. Los scripts vienen con la base
 		en el contenedor. 
