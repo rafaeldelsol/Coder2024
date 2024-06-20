@@ -1,0 +1,71 @@
+Rafael del Sol
+
+Entrega 4 / Trabajo Final 
+CoderHouse Data Engineering 2024
+
+El proyecto conecta con una de las Apis disponibles en : https://api-transporte.buenosaires.gob.ar/console, 
+que proveen información de estaciones de Bicicletas Públicas de la ciudad de BsAs.
+El Pipeline en Airflow  conecta con la Api en intervalos de una 4 horas, procesa según la parametrización
+y registra en la tabla Alertas para determinar el envío de correos para generar una acción sobre las estaciones.
+-Enviar reparador en caso de Bicis no disponibles en la estación supere el xx% de su capacidad total.
+
+En el directorio en el que se ha descargado el proyecto se encuentra :
+	
+	- DataWH : Contiene el Volumen de la Base de Datos Postgre que persiste aún cuando el contenedor sea eliminado.
+
+	- Carpeta Antes_de_Iniciar : Contiene código para la creación de tablas necesarias. Los scripts vienen con la base
+		en el contenedor. 
+		Actualiza_Maestro_Estaciones.py (Conecta con Api para obtener los datos "estáticos" referente a las estaciones)
+
+	- Carpeta Dags : Contiene el código Python y archivo "param.json"
+
+	- Archivo : docker-compose.yml  
+	
+	- Archivo : claves.env  Contienes las credeciales que se utilizarán en las conexiones que pueden
+	  ser ocultadas en Github.
+
+El proyecto se compone por 5 Dags.
+D1 :Extract Data: Extrae datos de la API de transporte y los guarda en un archivo JSON.
+ 	(Información del estado actual de la estaciones)
+
+D2 :Transform Data: Transforma los datos extraídos, añadiendo información adicional y validando campos. Transforma los datos y valida en función de los parametros provistos si se debe enviar una alerta
+     para cada de las estaciones.
+
+D3 : Registra todos los datos en el Data Warehouse local para mantener el historial completo de los registros.
+ 	"monitor_estaciones:bicis"
+     Registra en la base de datos local, tabla "Alertas" los datos descargados desde la Api vinculados (Join) con la tabla 
+     "datos_estaciones_bicis". (Datos estáticos descargados de la API)
+
+D4 : Verifica los datos descargados y registra la tabla "Alertas" a enviar en función del parámetro. (param.json)
+
+D5 : Envía el correo a la lista de destinatarios. (param.json)
+
+Ejecución del Proyecto:
+
+Paso 1
+La carpeta DataWH contiene el Data Warehouse.
+Se deja documentado en la carpeta "Antes de Iniciar" los scripts (01 Scripts_Creacion_tablas):
+
+Tabla : datos_estaciones_bici
+	Infromación estática de todas las estaciones, sus capacidades y ubicaciones.
+	(Una vez creada ejecutar: 05 Actualiza_Maestro_Estaciones. )
+
+Tabla: monitore_estaciones_bici.
+	(En la Entrga Nro3 se registraron los datos en Redshift, para Entrega4 en el Data Warehouse local)
+
+Tabla: alertas (En Data Warehouse local)
+	Se utiliza para disparar el envío de correos automatizados.
+
+Paso 2
+Ubicados en el directorio de descarga del proyecto ejecutar: docker-compose up
+Resultado de la creación de contenedores en 02 docker.jpg / 03 Dags.jpg
+
+
+
+
+
+
+
+
+
+  
